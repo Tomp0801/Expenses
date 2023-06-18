@@ -1,0 +1,7 @@
+__pycache__/
+test*
+tmp/
+test/
+*.csv
+categories.json
+categories_old.json
