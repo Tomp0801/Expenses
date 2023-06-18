@@ -1,5 +1,22 @@
 from datetime import datetime
 import pandas as pd
+import configparser
+
+def get_kw_args(file, section):
+    config = configparser.ConfigParser()
+    config.read(file)
+    args = dict(config[section])
+    # auto type conversion
+    for k, v in args.items():
+        if v=="True":
+            args[k] = True
+        if v=="False":
+            args[k] = False
+        try:
+            args[k] = int(v)
+        except:
+            pass
+    return args
 
 def get_start_date(df):
     return datetime.strptime(df["Buchung"][len(df)-1], "%d.%m.%Y")
@@ -78,13 +95,17 @@ def condense_amounts(labels, amounts):
         condensed[label] += amounts[i]
     return list(condensed.keys()), list(condensed.values())
 
-def read_expenses(df, only_negative=True):
+def read_expenses(df, negative=True, positive=False):
     for i, row in df.iterrows():
         betrag = row["Betrag"].replace(".", "")
         betrag = betrag.replace(",", ".")
         df.at[i, "Betrag"] = float(betrag)
-    if only_negative:
+    if negative and not positive:
         df = df[df["Betrag"] <= 0]
+    elif not negative and positive:
+        df = df[df["Betrag"] >= 0]
+    elif not negative and not positive:
+        print("Error: Selected neither negative nor positive transactions")
     df = df[df["Auftraggeber/Empfänger"] != "Thomas Pfitzinger"]
     df.reset_index(inplace=True, drop=True)
     return df

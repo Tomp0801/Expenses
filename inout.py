@@ -90,31 +90,3 @@ def ask_choice(message, choices):
         return choices[i], False
     except:
         return answer, True
-
-def categorize(df, indices, categories, save_categories=True):
-    categorized_indices = []
-    for i in indices:
-        amount = df.loc[i, "Betrag"]
-        sender = df.loc[i, "Verwendungszweck"]
-        purpose = df.loc[i, "Auftraggeber/Empfänger"]
-        print(f"Not found: {sender} - {purpose} : {amount}")
-        new_cat, cat_is_new = ask_choice("Enter category:", np.unique(list(categories.keys())))
-        if new_cat is None:
-            new_keyword = lower_no_space(purpose)
-            new_cat = "Ignored"
-        elif new_cat == "":
-            #new_cat = "Verschiedenes"
-            continue
-        else:
-            new_keyword = None
-            while new_keyword is None or not find_keyword(new_keyword, [sender, purpose]): 
-                new_keyword = input("Type in keyword to recognize similar entries: ")
-        
-        if not new_cat in list(categories.keys()):
-            categories[new_cat] = []
-        categories[new_cat].append(new_keyword)
-        categorized_indices.append(i)
-        if save_categories:
-            with open("categories.json", "w") as f:
-                json.dump(categories, f, indent=4)
-    return categorized_indices
