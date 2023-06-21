@@ -1,19 +1,26 @@
 import sys
 import json
-from inout import categorize, read_categories, read_expense_file
+from inout import read_categories, read_expense_file
 from utils import get_week_count, read_expenses, collect_expenses, add_up_expenses
 from plot_utils import AdvancedPiePlot
+from categorizer import Categorizer
+import configparser
 
-dont_ask = False
+dont_ask = True
 
 file = sys.argv[1]
-categories = read_categories()
-input_df = read_expense_file(file, date_column="Buchung", delimiter=";", encoding="cp1252")
-df_expenses = read_expenses(input_df, only_negative=True)
+config_file = sys.argv[2]
 
+config = configparser.ConfigParser()
+config.read(config_file)
+cat = Categorizer(file, config["categorizing"])
+cat.complete()
+
+df_expenses = cat._df_expenses
 weeks = get_week_count(df_expenses)
 
-expenses, indices_not_found = collect_expenses(df_expenses, categories)
+
+expenses, indices_not_found = cat.collect()
 
 if not dont_ask:
     indices = categorize(df_expenses, indices_not_found, categories, save_categories=True)

@@ -4,33 +4,29 @@ import json
 import numpy as np
 
 class Categorizer:
-    def __init__(self, folder, date_column, delimiter=',', encoding="utf-8",
-                 categories_file="categories.json",
-                 outgoing=True, incoming=False) -> None:
-        self._df = read_all_expenses(folder, date_column=date_column, 
-                                     delimiter=delimiter, encoding=encoding)
-        self._categories_file = categories_file
-        self._categories = read_categories(categories_file)
-        self._expenses_df = read_expenses(self._df, negative=outgoing, positive=incoming)
-
-        
-    @staticmethod
-    def create(folder, config_file):
-        return Categorizer(folder, **get_kw_args(config_file, "categorizing"))
+    def __init__(self, folder, config) -> None:
+        self._df = read_all_expenses(folder, date_column=config["date_column"], 
+                                     delimiter=config["delimiter"], encoding=config["encoding"])
+        self._categories_file = config["categories_file"]
+        self._categories = read_categories(config["categories_file"])
+        self._df_expenses = read_expenses(self._df, 
+                                          negative=(config["outgoing"]=="True"), 
+                                          positive=(config["incoming"]=="True"))
+        self._config = config
     
     def complete(self, save=True):
         expenses, indices_not_found = collect_expenses(self._df_expenses, self._categories)
 
-        indices = self.categorize(indices_not_found, save_categories=save)
+        indices = self.categorize(indices_not_found, self._categories, save_categories=save)
         missing_expenses = self._df_expenses[indices]
-
+        return missing_expenses
         
     def categorize(self, indices, categories, save_categories=True):
         categorized_indices = []
         for i in indices:
-            amount = self._expenses_df.loc[i, "Betrag"]
-            sender = self._expenses_df.loc[i, "Verwendungszweck"]
-            purpose = self._expenses_df.loc[i, "Auftraggeber/Empfänger"]
+            amount = self._df_expenses.loc[i, self._config["amount_column"]]
+            sender = self._df_expenses.loc[i, self._config["purpose_column"]]
+            purpose = self._df_expenses.loc[i, self._config["name_column"]]
             print(f"Not found: {sender} - {purpose} : {amount}")
             new_cat, cat_is_new = ask_choice("Enter category:", np.unique(list(categories.keys())))
             if new_cat is None:
@@ -52,3 +48,30 @@ class Categorizer:
                 with open(self._categories_file, "w") as f:
                     json.dump(categories, f, indent=4)
         return categorized_indices
+    
+    def collect(self, expenses={}):
+        indices_not_found = []
+        for i, row in self._df_expenses.iterrows():
+            found = False
+            for cat_name in self._categories.keys():
+                #print(cat)
+                #print(row["Verwendungszweck"].lower().replace(" ", ""))
+                purpose = row[self._config["purpose_column"]]
+                sender = row[self._config["name_column"]]
+                cat_keywords = self._categories[cat_name]
+                for keyword in cat_keywords:
+                    if find_keyword(keyword, [sender, purpose]):
+                        found = True
+                        Categorizer.add_expense_to_category(expenses, cat_name, row[self._config["amount_column"]], keyword)
+                        #print(row["Auftraggeber/Empfänger"], row["Verwendungszweck"])
+            if not found:
+                indices_not_found.append(i)
+        return expenses, indices_not_found
+    
+    @staticmethod
+    def add_expense_to_category(all_cats, cat_name, amount, keyword):
+        if not cat_name in all_cats.keys():
+            all_cats[cat_name] = {"total": 0.0, "amounts":[], "labels":[]}
+        all_cats[cat_name]["total"] += -amount
+        all_cats[cat_name]["amounts"].append(-amount)
+        all_cats[cat_name]["labels"].append(keyword)

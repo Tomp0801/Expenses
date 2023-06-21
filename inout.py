@@ -37,9 +37,10 @@ def read_all_expenses(path, date_column, delimiter=",", encoding="utf-8"):
     """
     base_df = None
     for file in sorted(os.listdir(path)):
-        if not file.endswith(".csv"):
+        _file = os.path.join(path, file)
+        if os.path.isdir(_file) or not _file.endswith(".csv"):
             continue
-        df = read_expense_file(os.path.join(path, file), date_column, delimiter, encoding)
+        df = read_expense_file(_file, date_column, delimiter, encoding)
         if base_df is None:
             base_df = df
         else:
