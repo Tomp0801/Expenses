@@ -17,7 +17,7 @@ cat = Categorizer(file, config["categorizing"])
 cat.complete()
 
 df_expenses = cat._df_expenses
-weeks = get_week_count(df_expenses)
+weeks = cat.get_week_count()
 
 
 expenses, indices_not_found = cat.collect()
@@ -28,8 +28,8 @@ if not dont_ask:
     expenses, indices_not_found = collect_expenses(df_expenses, categories, expenses=expenses)
 
 print(f"{len(indices_not_found)} entries not categorized")
-ignored = expenses["Ignored"]
-print(f"{ignored['total']:.2f}€ ignored ({ignored['total']/weeks:.2f}€ per week)")
+#ignored = expenses["Ignored"]
+#print(f"{ignored['total']:.2f}€ ignored ({ignored['total']/weeks:.2f}€ per week)")
 
 categories, totals, labels = add_up_expenses(expenses)
 

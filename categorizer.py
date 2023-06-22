@@ -2,20 +2,19 @@ from inout import read_all_expenses, read_categories, ask_choice
 from utils import get_kw_args, read_expenses, lower_no_space, find_keyword, collect_expenses
 import json
 import numpy as np
+from datetime import datetime
 
 class Categorizer:
     def __init__(self, folder, config) -> None:
+        self._config = config
         self._df = read_all_expenses(folder, date_column=config["date_column"], 
                                      delimiter=config["delimiter"], encoding=config["encoding"])
         self._categories_file = config["categories_file"]
         self._categories = read_categories(config["categories_file"])
-        self._df_expenses = read_expenses(self._df, 
-                                          negative=(config["outgoing"]=="True"), 
-                                          positive=(config["incoming"]=="True"))
-        self._config = config
+        self._df_expenses = self.read_expenses(self._df)
     
     def complete(self, save=True):
-        expenses, indices_not_found = collect_expenses(self._df_expenses, self._categories)
+        expenses, indices_not_found = self.collect()
 
         indices = self.categorize(indices_not_found, self._categories, save_categories=save)
         missing_expenses = self._df_expenses[indices]
@@ -75,3 +74,39 @@ class Categorizer:
         all_cats[cat_name]["total"] += -amount
         all_cats[cat_name]["amounts"].append(-amount)
         all_cats[cat_name]["labels"].append(keyword)
+
+    def read_expenses(self, df):
+        negative = self._config["outgoing"]=="True"
+        positive = self._config["incoming"]=="True"
+        amount = self._config["amount_column"]
+        for i, row in df.iterrows():
+            betrag = row[amount].replace(".", "")
+            betrag = betrag.replace(",", ".")
+            df.at[i, amount] = float(betrag)
+        if negative and not positive:
+            df = df[df[amount] <= 0]
+        elif not negative and positive:
+            df = df[df[amount] >= 0]
+        elif not negative and not positive:
+            print("Error: Selected neither negative nor positive transactions")
+        df = df[df[self._config["name_column"]] != self._config["name"]]
+        df.reset_index(inplace=True, drop=True)
+        return df
+
+    def get_week_count(self):
+        df = self._df_expenses
+        date_col = self._config["date_column"]
+        date_f = self._config["date_format"]
+        if date_f.lower()=="dmy":
+            date_f = "%d.%m.%Y"
+        elif date_f.lower()=="ymd":
+            date_f = "%Y.%m.%d"
+        elif date_f.lower()=="mdy":
+            date_f = "%m.%d.%Y"
+        elif date_f.lower()=="ydm":
+            date_f = "%Y.%d.%m"
+        else:
+            date_f = "%d.%m.%Y"
+        start = datetime.strptime(df[date_col][len(df)-1], date_f)
+        stop = datetime.strptime(df[date_col][0], date_f)
+        return (stop - start).days / 7
