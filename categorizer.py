@@ -15,9 +15,8 @@ class Categorizer:
     
     def complete(self, save=True):
         expenses, indices_not_found = self.collect()
-
         indices = self.categorize(indices_not_found, self._categories, save_categories=save)
-        missing_expenses = self._df_expenses[indices]
+        missing_expenses = self._df_expenses.loc[indices]
         return missing_expenses
         
     def categorize(self, indices, categories, save_categories=True):

@@ -3,6 +3,7 @@ __pycache__/
 test*
 tmp/
 test/
+Steffi/
 *.csv
 categories.json
 categories_old.json

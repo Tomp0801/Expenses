@@ -18,15 +18,6 @@ def get_kw_args(file, section):
             pass
     return args
 
-def get_start_date(df):
-    return datetime.strptime(df["Buchung"][len(df)-1], "%d.%m.%Y")
-
-def get_end_date(df):
-    return datetime.strptime(df["Buchung"][0], "%d.%m.%Y")
-
-def get_week_count(df):
-    return (get_end_date(df) - get_start_date(df)).days / 7
-
 def lower_no_space(string):
     return string.lower().replace(" ","")
     
@@ -56,26 +47,6 @@ def add_expense_to_category(all_cats, cat_name, amount, keyword):
     all_cats[cat_name]["amounts"].append(-amount)
     all_cats[cat_name]["labels"].append(keyword)
 
-
-def collect_expenses(df, categories, expenses={}):
-    indices_not_found = []
-    for i, row in df.iterrows():
-        found = False
-        for cat_name in categories.keys():
-            #print(cat)
-            #print(row["Verwendungszweck"].lower().replace(" ", ""))
-            purpose = row["Verwendungszweck"]
-            sender = row["Auftraggeber/Empfänger"]
-            cat_keywords = categories[cat_name]
-            for keyword in cat_keywords:
-                if find_keyword(keyword, [sender, purpose]):
-                    found = True
-                    add_expense_to_category(expenses, cat_name, row["Betrag"], keyword)
-                    #print(row["Auftraggeber/Empfänger"], row["Verwendungszweck"])
-        if not found:
-            indices_not_found.append(i)
-    return expenses, indices_not_found
-
 def add_up_expenses(expenses):
     cats = []
     totals = []
@@ -94,18 +65,3 @@ def condense_amounts(labels, amounts):
             condensed[label] = 0
         condensed[label] += amounts[i]
     return list(condensed.keys()), list(condensed.values())
-
-def read_expenses(df, negative=True, positive=False):
-    for i, row in df.iterrows():
-        betrag = row["Betrag"].replace(".", "")
-        betrag = betrag.replace(",", ".")
-        df.at[i, "Betrag"] = float(betrag)
-    if negative and not positive:
-        df = df[df["Betrag"] <= 0]
-    elif not negative and positive:
-        df = df[df["Betrag"] >= 0]
-    elif not negative and not positive:
-        print("Error: Selected neither negative nor positive transactions")
-    df = df[df["Auftraggeber/Empfänger"] != "Thomas Pfitzinger"]
-    df.reset_index(inplace=True, drop=True)
-    return df

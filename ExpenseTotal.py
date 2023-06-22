@@ -6,7 +6,7 @@ from plot_utils import AdvancedPiePlot
 from categorizer import Categorizer
 import configparser
 
-dont_ask = True
+dont_ask = False
 
 file = sys.argv[1]
 config_file = sys.argv[2]
@@ -14,18 +14,15 @@ config_file = sys.argv[2]
 config = configparser.ConfigParser()
 config.read(config_file)
 cat = Categorizer(file, config["categorizing"])
-cat.complete()
 
 df_expenses = cat._df_expenses
 weeks = cat.get_week_count()
 
-
 expenses, indices_not_found = cat.collect()
 
 if not dont_ask:
-    indices = categorize(df_expenses, indices_not_found, categories, save_categories=True)
-    missing_expenses = df_expenses[indices]
-    expenses, indices_not_found = collect_expenses(df_expenses, categories, expenses=expenses)
+    indices = cat.complete(save=True)
+    expenses, indices_not_found = cat.collect(expenses=expenses)
 
 print(f"{len(indices_not_found)} entries not categorized")
 #ignored = expenses["Ignored"]
