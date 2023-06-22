@@ -1,9 +1,10 @@
 import numpy as np
 import sys
-from inout import read_categories, read_all_expenses
-from utils import read_expenses, divide_df, collect_expenses
 from plot_utils import AdvancedLinePlot
+from categorizer import Categorizer
+import configparser
 
+dont_ask = True
 top = 6
 
 ignore = [
@@ -12,17 +13,28 @@ ignore = [
     ]
 
 file = sys.argv[1]
-categories = read_categories()
-input_df = read_all_expenses(".", date_column="Buchung", delimiter=";", encoding="cp1252")
-expenses_df = read_expenses(input_df, only_negative=True)
+config_file = sys.argv[2]
 
-dates, dfs = divide_df(expenses_df)
+config = configparser.ConfigParser()
+config.read(config_file)
+cat = Categorizer(file, config["categorizing"])
+
+df_expenses = cat._df_expenses
+weeks = cat.get_week_count()
+
+expenses, indices_not_found = cat.collect()
+
+if not dont_ask:
+    indices = cat.complete(save=True)
+    expenses, indices_not_found = cat.collect(expenses=expenses)
+
+dates, dfs = cat.divide_by_months()
 
 plot = AdvancedLinePlot()
 totals = {}
 
 for i, df in enumerate(dfs):
-    expenses, _ = collect_expenses(df, categories, expenses={})
+    expenses, _ = cat.collect(df, expenses={})
     for category in expenses.keys():
         if category=="Ignored" or category in ignore:
             continue

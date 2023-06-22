@@ -1,5 +1,3 @@
-from datetime import datetime
-import pandas as pd
 import configparser
 
 def get_kw_args(file, section):
@@ -18,6 +16,18 @@ def get_kw_args(file, section):
             pass
     return args
 
+def get_date_format(date_f):
+    if date_f.lower()=="dmy":
+        return "%d.%m.%Y"
+    elif date_f.lower()=="ymd":
+        return "%Y.%m.%d"
+    elif date_f.lower()=="mdy":
+        return "%m.%d.%Y"
+    elif date_f.lower()=="ydm":
+        return "%Y.%d.%m"
+    else:
+        return "%d.%m.%Y"
+
 def lower_no_space(string):
     return string.lower().replace(" ","")
     
@@ -26,19 +36,6 @@ def find_keyword(keyword, strings):
         if keyword in lower_no_space(s):
             return True
     return False
-
-def divide_df(df, time_col="Buchung"):
-    df["Monat"] = None
-    for i, row in df.iterrows():
-        date = datetime.strptime(row[time_col], "%d.%m.%Y")
-        df.at[i, "Monat"] = date.year * 12 + date.month
-    months = df["Monat"].unique()
-    dfs = []
-    dates = []
-    for m in months:
-        dfs.append(df[df["Monat"] == m])
-        dates.append(datetime(year=m // 12, month=m%12+1, day=1))
-    return dates, dfs
 
 def add_expense_to_category(all_cats, cat_name, amount, keyword):
     if not cat_name in all_cats.keys():

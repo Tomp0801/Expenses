@@ -1,5 +1,5 @@
 from inout import read_all_expenses, read_categories, ask_choice
-from utils import get_kw_args, read_expenses, lower_no_space, find_keyword, collect_expenses
+from utils import get_date_format, lower_no_space, find_keyword
 import json
 import numpy as np
 from datetime import datetime
@@ -47,9 +47,11 @@ class Categorizer:
                     json.dump(categories, f, indent=4)
         return categorized_indices
     
-    def collect(self, expenses={}):
+    def collect(self, df=None, expenses={}):
+        if df is None:
+            df = self._df_expenses
         indices_not_found = []
-        for i, row in self._df_expenses.iterrows():
+        for i, row in df.iterrows():
             found = False
             for cat_name in self._categories.keys():
                 #print(cat)
@@ -65,6 +67,21 @@ class Categorizer:
             if not found:
                 indices_not_found.append(i)
         return expenses, indices_not_found
+
+    def divide_by_months(self, month_col="Month"):
+        time_col = self._config["date_column"]
+        date_f = get_date_format(self._config["date_format"])
+        self._df_expenses[month_col] = None
+        for i, row in self._df_expenses.iterrows():
+            date = datetime.strptime(row[time_col], date_f)
+            self._df_expenses.at[i, month_col] = date.year * 12 + date.month
+        months = self._df_expenses[month_col].unique()
+        dfs = []
+        dates = []
+        for m in months:
+            dfs.append(self._df_expenses[self._df_expenses[month_col] == m])
+            dates.append(datetime(year=m // 12, month=m%12+1, day=1))
+        return dates, dfs
     
     @staticmethod
     def add_expense_to_category(all_cats, cat_name, amount, keyword):
@@ -96,16 +113,7 @@ class Categorizer:
         df = self._df_expenses
         date_col = self._config["date_column"]
         date_f = self._config["date_format"]
-        if date_f.lower()=="dmy":
-            date_f = "%d.%m.%Y"
-        elif date_f.lower()=="ymd":
-            date_f = "%Y.%m.%d"
-        elif date_f.lower()=="mdy":
-            date_f = "%m.%d.%Y"
-        elif date_f.lower()=="ydm":
-            date_f = "%Y.%d.%m"
-        else:
-            date_f = "%d.%m.%Y"
+        date_f = get_date_format(date_f)
         start = datetime.strptime(df[date_col][len(df)-1], date_f)
         stop = datetime.strptime(df[date_col][0], date_f)
         return (stop - start).days / 7
