@@ -1,26 +1,28 @@
 import sys
-import json
-from inout import read_categories, read_expense_file
-from utils import get_week_count, read_expenses, collect_expenses, add_up_expenses
+from utils import add_up_expenses
 from plot_utils import AdvancedPiePlot
 from categorizer import Categorizer
 import configparser
+import argparse
 
-dont_ask = False
+parser = argparse.ArgumentParser(prog="Expense Total",
+                                 description="Plot a pie chart of the categories of all your expenses.")
+parser.add_argument("folder")
+parser.add_argument("config_file")
+parser.add_argument("-c", "--categorize", action="store_true")
 
-file = sys.argv[1]
-config_file = sys.argv[2]
+args = parser.parse_args()
 
 config = configparser.ConfigParser()
-config.read(config_file)
-cat = Categorizer(file, config["categorizing"])
+config.read(args.config_file)
+cat = Categorizer(args.folder, config["categorizing"])
 
 df_expenses = cat._df_expenses
 weeks = cat.get_week_count()
 
 expenses, indices_not_found = cat.collect()
 
-if not dont_ask:
+if args.categorize:
     indices = cat.complete(save=True)
     expenses, indices_not_found = cat.collect(expenses=expenses)
 
