@@ -95,7 +95,6 @@ class AdvancedPiePlot:
                 cont, ind = patch.contains(event)
                 if cont:
                     keyword = self.subtexts[i].get_text()
-                    print(f"{keyword}")
                     i_keyword = self.plotted_labels.index(keyword)
                     amount = self.plotted_amounts[i_keyword]
                     self.annot.xy = patch.center

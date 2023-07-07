@@ -16,7 +16,9 @@ parser.add_argument("-c", "--categorize", action="store_true",
 parser.add_argument("-m", "--max-categories", type=int, default=None,
                     help="Maximum number of categories to plot. The categories with most expenses will be chosen.")
 parser.add_argument("-o", "--plot-other", action="store_true")
-parser.add_argument("-i", "--ignore", nargs="+", default=[])
+parser.add_argument("-e", "--exclude", nargs="+", default=[])
+parser.add_argument("-i", "--include", nargs="+", default=[])
+
 
 args = parser.parse_args()
 
@@ -43,7 +45,9 @@ totals = {}
 for i, df in enumerate(dfs):
     expenses, _ = cat.collect(df, expenses={})
     for category in expenses.keys():
-        if category=="Ignored" or category in args.ignore:
+        if len(args.include) > 0 and not category in args.include:
+            continue
+        if category=="Ignored" or category in args.exclude:
             continue
         if not category in totals:
             totals[category] = [0] * len(dfs)
@@ -61,6 +65,7 @@ plot_tots = []
 plot_labels = []
 if top is None:
     top = len(sums)
+top = min(top, len(sums))
 for i in range(top):
     ind = np.argmax(sums)
     sums[ind] = -1
