@@ -25,6 +25,8 @@ class Categorizer:
             amount = self._df_expenses.loc[i, self._config["amount_column"]]
             sender = self._df_expenses.loc[i, self._config["purpose_column"]]
             purpose = self._df_expenses.loc[i, self._config["name_column"]]
+            if self.find_category(purpose + sender):
+                continue
             print(f"Not found: {sender} - {purpose} : {amount}")
             new_cat, cat_is_new = ask_choice("Enter category:", np.unique(list(categories.keys())))
             if new_cat is None:
@@ -47,6 +49,14 @@ class Categorizer:
                     json.dump(categories, f, indent=4)
         return categorized_indices
     
+    def find_category(self, description):
+        for cat_name in self._categories.keys():
+            cat_keywords = self._categories[cat_name]
+            for keyword in cat_keywords:
+                if find_keyword(keyword, [description]):
+                    return cat_name
+        return None
+
     def collect(self, df=None, expenses={}):
         if df is None:
             df = self._df_expenses
@@ -63,6 +73,7 @@ class Categorizer:
                     if find_keyword(keyword, [sender, purpose]):
                         found = True
                         Categorizer.add_expense_to_category(expenses, cat_name, row[self._config["amount_column"]], keyword)
+                        # TODO use find_category
                         #print(row["Auftraggeber/Empfänger"], row["Verwendungszweck"])
             if not found:
                 indices_not_found.append(i)
