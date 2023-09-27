@@ -1,5 +1,5 @@
 from inout import read_all_expenses, read_categories, ask_choice
-from utils import get_date_format, lower_no_space, find_keyword
+from utils import get_date_format, find_keyword
 import json
 import numpy as np
 from datetime import datetime
@@ -30,7 +30,7 @@ class Categorizer:
             print(f"Not found: {sender} - {purpose} : {amount}")
             new_cat, cat_is_new = ask_choice("Enter category:", np.unique(list(categories.keys())))
             if new_cat is None:
-                new_keyword = lower_no_space(purpose)
+                new_keyword = purpose.replace(" ", "")
                 new_cat = "Ignored"
             elif new_cat == "":
                 #new_cat = "Verschiedenes"

@@ -1,4 +1,5 @@
 import configparser
+import re
 
 def get_kw_args(file, section):
     config = configparser.ConfigParser()
@@ -28,12 +29,9 @@ def get_date_format(date_f):
     else:
         return "%d.%m.%Y"
 
-def lower_no_space(string):
-    return string.lower().replace(" ","")
-    
 def find_keyword(keyword, strings):
     for s in strings:
-        if keyword in lower_no_space(s):
+        if re.search(keyword, s.replace(" ", ""), re.IGNORECASE):
             return True
     return False
 
