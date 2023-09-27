@@ -1,4 +1,5 @@
 import sys
+import os
 from utils import add_up_expenses
 from plot_utils import AdvancedPiePlot
 from categorizer import Categorizer
@@ -8,13 +9,12 @@ import argparse
 parser = argparse.ArgumentParser(prog="Expense Total",
                                  description="Plot a pie chart of the categories of all your expenses.")
 parser.add_argument("folder")
-parser.add_argument("config_file")
 parser.add_argument("-c", "--categorize", action="store_true")
 
 args = parser.parse_args()
 
 config = configparser.ConfigParser()
-config.read(args.config_file)
+config.read(os.path.join(args.folder, "config.ini"))
 cat = Categorizer(args.folder, config["categorizing"])
 
 df_expenses = cat._df_expenses

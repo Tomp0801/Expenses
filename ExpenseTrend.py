@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+import os
 from plot_utils import AdvancedLinePlot
 from categorizer import Categorizer
 import configparser
@@ -8,9 +9,8 @@ import argparse
 parser = argparse.ArgumentParser(prog="Expense Trend",
                                  description="Plot your expenses over the course of months.")
 parser.add_argument("folder", 
-                    help="Folder in which csv files with expenses are stored.")
-parser.add_argument("config_file", 
-                    help="Config file, mainly with parameters for reading the csv file.")
+                    help="Folder in which csv files with expenses are stored. \
+                        Must also contain a config.ini file with parameters for reading the csv files.")
 parser.add_argument("-c", "--categorize", action="store_true", 
                     help="With this option, the program will ask you to categorize uncategorized items, otherwise they will be ignored.")
 parser.add_argument("-m", "--max-categories", type=int, default=None,
@@ -25,7 +25,7 @@ args = parser.parse_args()
 top = args.max_categories
 
 config = configparser.ConfigParser()
-config.read(args.config_file)
+config.read(os.path.join(args.folder, "config.ini"))
 cat = Categorizer(args.folder, config["categorizing"])
 
 df_expenses = cat._df_expenses
