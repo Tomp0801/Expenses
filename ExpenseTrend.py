@@ -28,7 +28,8 @@ args = parser.parse_args()
 top = args.max_categories
 
 config = configparser.ConfigParser()
-config.read(os.path.join(args.folder, "config.ini"))
+config.read(os.path.join(args.folder, "config.ini"), encoding="utf-8")
+config.read(os.path.join(args.folder, "config.ini"), encoding=config["categorizing"]["encoding"])
 cat = Categorizer(args.folder, config["categorizing"])
 
 df_expenses = cat._df_expenses
