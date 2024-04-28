@@ -1,5 +1,6 @@
 import configparser
 import re
+import numpy as np
 
 def get_kw_args(file, section):
     config = configparser.ConfigParser()
@@ -60,3 +61,6 @@ def condense_amounts(labels, amounts):
             condensed[label] = 0
         condensed[label] += amounts[i]
     return list(condensed.keys()), list(condensed.values())
+
+def moving_average(x, w):
+    return np.convolve(x, np.ones(w), 'same') / w

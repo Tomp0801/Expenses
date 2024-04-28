@@ -5,6 +5,7 @@ from plot_utils import AdvancedLinePlot
 from categorizer import Categorizer
 import configparser
 import argparse
+from utils import moving_average
 
 parser = argparse.ArgumentParser(prog="Expense Trend",
                                  description="Plot your expenses over the course of months.")
@@ -18,6 +19,8 @@ parser.add_argument("-m", "--max-categories", type=int, default=None,
 parser.add_argument("-o", "--plot-other", action="store_true")
 parser.add_argument("-e", "--exclude", nargs="+", default=[])
 parser.add_argument("-i", "--include", nargs="+", default=[])
+parser.add_argument("-s", "--smoothen", type=int, default=None,
+                    help="Smoothen the results when plotting over a window with the given size.")
 
 
 args = parser.parse_args()
@@ -81,6 +84,9 @@ if args.plot_other:
             other = other + np.array(tots[i])
     plot_tots.append(other)
     plot_labels.append("Other")
+
+if args.smoothen:
+    plot_tots = [moving_average(pt, args.smoothen) for pt in plot_tots]
 
 plot.stackplot(dates, plot_tots, plot_labels)
 
