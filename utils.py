@@ -31,7 +31,7 @@ def get_date_format(date_f):
 
 def find_keyword(keyword, strings):
     for s in strings:
-        if re.search(keyword, s.replace(" ", ""), re.IGNORECASE):
+        if re.search(keyword, str(s).replace(" ", ""), re.IGNORECASE):
             return True
     return False
 

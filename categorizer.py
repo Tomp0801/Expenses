@@ -3,14 +3,15 @@ from utils import get_date_format, find_keyword
 import json
 import numpy as np
 from datetime import datetime
+import os
 
 class Categorizer:
     def __init__(self, folder, config) -> None:
         self._config = config
         self._df = read_all_expenses(folder, date_column=config["date_column"], 
                                      delimiter=config["delimiter"], encoding=config["encoding"])
-        self._categories_file = config["categories_file"]
-        self._categories = read_categories(config["categories_file"])
+        self._categories_file = os.path.join(folder, config["categories_file"])
+        self._categories = read_categories(self._categories_file)
         self._df_expenses = self.read_expenses(self._df)
     
     def complete(self, save=True):
@@ -22,9 +23,9 @@ class Categorizer:
     def categorize(self, indices, categories, save_categories=True):
         categorized_indices = []
         for i in indices:
-            amount = self._df_expenses.loc[i, self._config["amount_column"]]
-            sender = self._df_expenses.loc[i, self._config["purpose_column"]]
-            purpose = self._df_expenses.loc[i, self._config["name_column"]]
+            amount = float(self._df_expenses.loc[i, self._config["amount_column"]])
+            sender = str(self._df_expenses.loc[i, self._config["name_column"]])
+            purpose = str(self._df_expenses.loc[i, self._config["purpose_column"]])
             if self.find_category(purpose + sender):
                 continue
             print(f"Not found: {sender} - {purpose} : {amount}")
