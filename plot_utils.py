@@ -19,8 +19,15 @@ class AdvancedPiePlot:
         self.fig = plt.figure()
         self.ax = plt.subplot()
         global_plot = self
+    
+    def sort(self, amounts, labels):
+        sort_ind = list(reversed(np.argsort(amounts)))
+        amounts = np.array(amounts)[sort_ind]
+        labels = np.array(labels)[sort_ind]
+        return amounts, labels
 
     def plot(self, amounts, labels):
+        amounts, labels = self.sort(amounts, labels)
         explode = [0.1] * len(amounts)
         self.patches, self.texts = self.ax.pie(amounts, labels=labels, explode=explode)
 
@@ -56,6 +63,7 @@ class AdvancedPiePlot:
         amounts = cat_data["amounts"]
         labels = cat_data["labels"]
         labels, amounts = condense_amounts(labels, amounts)
+        amounts, labels = self.sort(amounts, labels)
         explode = [0.1] * len(amounts)
         self.patches, self.subtexts = self.subax.pie(amounts, labels=labels, explode=explode)
         self.plotted_labels = labels
