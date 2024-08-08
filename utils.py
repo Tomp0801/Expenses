@@ -64,3 +64,27 @@ def condense_amounts(labels, amounts):
 
 def moving_average(x, w):
     return np.convolve(x, np.ones(w), 'same') / w
+
+def get_all_leaves(node):
+    if isinstance(node, list):
+        return node
+    elif isinstance(node, dict):
+        elements = []
+        for k, els in node.items():
+            for el in get_all_leaves(els):
+                elements.append(el)
+        return elements
+
+def flatten_categories(categories, depth=1, prefix=None):
+    flattened = {}
+    for k, sub_categories in categories.items():
+        if prefix is None:
+            cat = k
+        else:
+            cat = f"{prefix}-{k}"
+        if depth == 1 or isinstance(sub_categories, list):
+            flattened[cat] = get_all_leaves(sub_categories)
+        else:
+            new_cats = flatten_categories(sub_categories, depth-1, prefix=cat)
+            flattened.update(new_cats)
+    return flattened

@@ -21,6 +21,8 @@ parser.add_argument("-e", "--exclude", nargs="+", default=[])
 parser.add_argument("-i", "--include", nargs="+", default=[])
 parser.add_argument("-s", "--smoothen", type=int, default=None,
                     help="Smoothen the results when plotting over a window with the given size.")
+parser.add_argument("-d", "--depth", type=int, default=1,
+                    help="Depth for sub-categories. Higher depth for more fine-grained categories.")
 
 
 args = parser.parse_args()
@@ -30,7 +32,7 @@ top = args.max_categories
 config = configparser.ConfigParser()
 config.read(os.path.join(args.folder, "config.ini"), encoding="utf-8")
 config.read(os.path.join(args.folder, "config.ini"), encoding=config["categorizing"]["encoding"])
-cat = Categorizer(args.folder, config["categorizing"])
+cat = Categorizer(args.folder, config["categorizing"], args.depth)
 
 df_expenses = cat._df_expenses
 weeks = cat.get_week_count()

@@ -1,19 +1,21 @@
 from inout import read_all_expenses, read_categories, ask_choice
-from utils import get_date_format, find_keyword
+from utils import get_date_format, find_keyword, flatten_categories
 import json
 import numpy as np
 from datetime import datetime
 import os
 
+
+
 class Categorizer:
-    def __init__(self, folder, config) -> None:
+    def __init__(self, folder, config, depth=1) -> None:
         self._config = config
         self._df = read_all_expenses(folder, date_column=config["date_column"], 
                                      delimiter=config["delimiter"], encoding=config["encoding"])
         self._categories_file = os.path.join(folder, config["categories_file"])
-        self._categories = read_categories(self._categories_file)
+        self._categories = flatten_categories(read_categories(self._categories_file), depth=depth)
         self._df_expenses = self.read_expenses(self._df)
-    
+        
     def complete(self, save=True):
         expenses, indices_not_found = self.collect()
         indices = self.categorize(indices_not_found, self._categories, save_categories=save)
@@ -58,15 +60,13 @@ class Categorizer:
                     return cat_name
         return None
 
-    def collect(self, df=None, expenses={}):
+    def collect(self, df=None, expenses={}, depth=0):
         if df is None:
             df = self._df_expenses
         indices_not_found = []
         for i, row in df.iterrows():
             found = False
             for cat_name in self._categories.keys():
-                #print(cat)
-                #print(row["Verwendungszweck"].lower().replace(" ", ""))
                 purpose = row[self._config["purpose_column"]]
                 sender = row[self._config["name_column"]]
                 cat_keywords = self._categories[cat_name]
@@ -117,9 +117,8 @@ class Categorizer:
             df = df[df[amount] >= 0]
         elif not negative and not positive:
             print("Error: Selected neither negative nor positive transactions")
-        df = df[df[self._config["name_column"]] != self._config["name"]]
-        df.reset_index(inplace=True, drop=True)
-        return df
+        #df = df[df[self._config["name_column"]] != self._config["name"]]
+        return df.reset_index(drop=True)
 
     def get_week_count(self):
         df = self._df_expenses

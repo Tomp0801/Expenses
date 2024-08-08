@@ -10,13 +10,17 @@ parser = argparse.ArgumentParser(prog="Expense Total",
                                  description="Plot a pie chart of the categories of all your expenses.")
 parser.add_argument("folder")
 parser.add_argument("-c", "--categorize", action="store_true")
+parser.add_argument("-d", "--depth", type=int, default=1,
+                    help="Depth for sub-categories. Higher depth for more fine-grained categories.")
+
 
 args = parser.parse_args()
 
 config = configparser.ConfigParser()
 config.read(os.path.join(args.folder, "config.ini"), encoding="utf-8")
 config.read(os.path.join(args.folder, "config.ini"), encoding=config["categorizing"]["encoding"])
-cat = Categorizer(args.folder, config["categorizing"])
+cat = Categorizer(args.folder, config["categorizing"], depth=args.depth)
+
 
 df_expenses = cat._df_expenses
 weeks = cat.get_week_count()
