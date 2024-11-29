@@ -1,8 +1,8 @@
 import sys
 import os
-from utils import add_up_expenses
-from plot_utils import AdvancedPiePlot
-from categorizer import Categorizer
+from categorizing.utils import add_up_expenses
+from analysis.plot_utils import AdvancedPiePlot
+from categorizing.categorizer import Categorizer
 import configparser
 import argparse
 

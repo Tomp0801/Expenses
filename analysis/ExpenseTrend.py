@@ -1,11 +1,11 @@
 import numpy as np
 import sys
 import os
-from plot_utils import AdvancedLinePlot
-from categorizer import Categorizer
+from analysis.plot_utils import AdvancedLinePlot
+from categorizing.categorizer import Categorizer
 import configparser
 import argparse
-from utils import moving_average
+from categorizing.utils import moving_average
 
 parser = argparse.ArgumentParser(prog="Expense Trend",
                                  description="Plot your expenses over the course of months.")

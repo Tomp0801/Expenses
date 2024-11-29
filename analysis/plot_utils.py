@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from utils import condense_amounts
+from categorizing.utils import condense_amounts
 
 global_plot = None
 

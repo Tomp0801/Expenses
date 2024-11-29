@@ -1,5 +1,5 @@
-from inout import read_all_expenses, read_categories, ask_choice
-from utils import get_date_format, find_keyword, flatten_categories
+from importing.inout import read_all_expenses, read_categories, ask_choice
+from categorizing.utils import get_date_format, find_keyword, flatten_categories
 import json
 import numpy as np
 from datetime import datetime

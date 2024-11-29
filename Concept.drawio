@@ -1,0 +1,57 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.7.5 Chrome/126.0.6478.183 Electron/31.3.0 Safari/537.36" version="24.7.5">
+  <diagram name="Page-1" id="U941nqUiKxUwtw3Kj62M">
+    <mxGraphModel dx="1364" dy="843" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s3gF5yRnA8VxCr6aZ4qT-1" target="s3gF5yRnA8VxCr6aZ4qT-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-7" value="category" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="s3gF5yRnA8VxCr6aZ4qT-6">
+          <mxGeometry x="-0.05" y="4" relative="1" as="geometry">
+            <mxPoint x="-4" y="3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-1" value="Categorizing" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="280" y="180" width="210" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-2" value="Analyzing" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="520" y="180" width="290" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="s3gF5yRnA8VxCr6aZ4qT-3" target="s3gF5yRnA8VxCr6aZ4qT-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-3" value="Importing" style="rounded=1;whiteSpace=wrap;html=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="20" y="180" width="220" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="s3gF5yRnA8VxCr6aZ4qT-4" target="s3gF5yRnA8VxCr6aZ4qT-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-4" value="single table" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="390" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-10" value="auto by keywords" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="300" y="230" width="70" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-11" value="manual corrections" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="400" y="230" width="70" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-13" value="multiple files" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="40" y="230" width="90" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-14" value="Total pie chart" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="220" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-15" value="Change over time" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="530" y="270" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-16" value="Time window" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="220" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s3gF5yRnA8VxCr6aZ4qT-17" value="categories and sub-categories" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="680" y="270" width="120" height="40" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

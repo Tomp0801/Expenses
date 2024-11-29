@@ -4,8 +4,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 
-def read_expense_file(file, date_column, delimiter=",", encoding="utf-8"):
-    """Read a csv file containing expenses.
+def read_expense_file(file, date_column, delimiter=",", encoding="utf-8", decimal="."):
+    """Read a csv file containing expenses. Adds timestamp column.
 
     Args:
         file (str): File name.
@@ -16,13 +16,13 @@ def read_expense_file(file, date_column, delimiter=",", encoding="utf-8"):
     Returns:
         pd.DataFrame: The read data in a dataframe.
     """
-    df = pd.read_csv(file, delimiter=delimiter, encoding=encoding)
+    df = pd.read_csv(file, delimiter=delimiter, encoding=encoding, decimal=decimal)
     df["timestamp"] = None
     for i in range(len(df)):
         df.at[i, "timestamp"] = datetime.strptime(df.loc[i, date_column], "%d.%m.%Y").timestamp()
     return df
 
-def read_all_expenses(path, date_column, delimiter=",", encoding="utf-8"):
+def read_all_expenses(path, date_column, delimiter=",", encoding="utf-8", decimal="."):
     """Read all expenses-csv files in a directory.
 
     Args:
@@ -39,7 +39,7 @@ def read_all_expenses(path, date_column, delimiter=",", encoding="utf-8"):
         _file = os.path.join(path, file)
         if os.path.isdir(_file) or not _file.endswith(".csv"):
             continue
-        df = read_expense_file(_file, date_column, delimiter, encoding)
+        df = read_expense_file(_file, date_column, delimiter, encoding, decimal)
         if base_df is None:
             base_df = df
         else:
