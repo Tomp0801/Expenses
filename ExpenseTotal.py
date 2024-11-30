@@ -9,7 +9,8 @@ import argparse
 parser = argparse.ArgumentParser(prog="Expense Total",
                                  description="Plot a pie chart of the categories of all your expenses.")
 parser.add_argument("folder")
-parser.add_argument("-c", "--categorize", action="store_true")
+parser.add_argument("-c", "--categorize", action="store_true",
+                    help="With this option, the program will ask you to categorize uncategorized items, otherwise they will be ignored.")
 parser.add_argument("-d", "--depth", type=int, default=1,
                     help="Depth for sub-categories. Higher depth for more fine-grained categories.")
 

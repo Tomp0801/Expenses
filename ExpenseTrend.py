@@ -43,6 +43,9 @@ if args.categorize:
     indices = cat.complete(save=True)
     expenses, indices_not_found = cat.collect(expenses=expenses)
 
+print(f"{len(indices_not_found)} entries not categorized")
+
+
 dates, dfs = cat.divide_by_months()
 
 plot = AdvancedLinePlot()
