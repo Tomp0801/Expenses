@@ -1,5 +1,4 @@
 import numpy as np
-import sys
 import os
 from analysis.plot_utils import AdvancedLinePlot
 from categorizing.categorizer import Categorizer

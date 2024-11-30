@@ -59,6 +59,18 @@ class Categorizer:
                 if find_keyword(keyword, [description]):
                     return cat_name
         return None
+    
+    def get_note_keywords(self, note_str):
+        if note_str is None or note_str=="" or not isinstance(note_str, str):
+            return []
+        notes = note_str.split(" ")
+        res = []
+        for n in notes:
+            n = n.strip()
+            if n.startswith("#"):
+                n = n[1:]
+            res.append(n)
+        return res
 
     def collect(self, df=None, expenses={}, depth=0):
         if df is None:
@@ -69,9 +81,13 @@ class Categorizer:
             for cat_name in self._categories.keys():
                 purpose = row[self._config["purpose_column"]]
                 sender = row[self._config["name_column"]]
+                notes = row[self._config["notes_column"]]
+                notes = self.get_note_keywords(notes)
+                notes.append(sender)
+                notes.append(purpose)
                 cat_keywords = self._categories[cat_name]
                 for keyword in cat_keywords:
-                    if find_keyword(keyword, [sender, purpose]):
+                    if find_keyword(keyword, notes):
                         found = True
                         Categorizer.add_expense_to_category(expenses, cat_name, row[self._config["amount_column"]], keyword)
                         # TODO use find_category
